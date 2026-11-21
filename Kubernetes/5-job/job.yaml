@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: auratech-migrate-seed
+  namespace: pruebas
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate-seed
+          image: luisantoniorr/auratech-api:1.1
+          command: ["php", "artisan", "migrate:fresh", "--seed", "--force"]
+          env:
+            - name: APP_NAME
+              value: "AuraTech"
+            - name: APP_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: APP_ENV
+            - name: APP_DEBUG
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: APP_DEBUG
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: APP_KEY
+            - name: DB_CONNECTION
+              value: "mysql"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: DB_HOST
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: DB_DATABASE
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: DB_PASSWORD
+            - name: SESSION_DRIVER
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: SESSION_DRIVER
+            - name: CACHE_STORE
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: CACHE_STORE
+            - name: QUEUE_CONNECTION
+              valueFrom:
+                secretKeyRef:
+                  name: auratech-secret
+                  key: QUEUE_CONNECTION
